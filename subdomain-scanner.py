@@ -1,7 +1,12 @@
 # -*- coding: utf-8 -*-
-import sys
+import os, sys
 import dns.resolver
 import socket
+
+# Ver el destino de cada subdominio encontrado
+def destiny_ip(domain):
+    ip = os.system('nslookup ' + domain)
+    return ip
 
 # Definir la lista de subdominios
 my_file = open('diccionario1.txt', 'r')
@@ -55,6 +60,7 @@ for subdomain in subdomains:
                 print(f'Subdominio: {full_domain}')
                 print(f'Encontrado: Sí')
                 print(f'Valor PTR: {ptr_value}')
+                print(destiny_ip(full_domain))
                 print('---')
 
             elif answer.rdtype == dns.rdatatype.CNAME:
@@ -65,10 +71,12 @@ for subdomain in subdomains:
             print(f'Subdominio: {full_domain}')
             print(f'Encontrado: Sí')
             print(f'Valores CNAME: {", ".join(cname_values)}')
+            print(destiny_ip(full_domain))
             print('---')
 
     except dns.resolver.NXDOMAIN:
         pass
 
     except Exception as e:
-        print(f'Error al resolver {full_domain}: {str(e)}')
+        pass
+        #print(f'Error al resolver {full_domain}: {str(e)}')
