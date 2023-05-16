@@ -2,6 +2,20 @@
 import os, sys
 import dns.resolver
 import socket
+from colorama import Fore, Back, init
+init()
+
+# Limpia todo el contenido de la pantalla
+def limpiar_pantalla():
+    nombre_sistema = platform.system()
+    if nombre_sistema == "Windows":
+        os.system('cls')
+    else:
+        os.system('clear')
+
+# Retorna la fecha del sistema
+def fecha():
+    return time.strftime('Fecha: %d/%m/%Y')
 
 # Ver el destino de cada subdominio encontrado
 def destiny_ip(domain):
@@ -12,6 +26,9 @@ def destiny_ip(domain):
 my_file = open('diccionario1.txt', 'r')
 data = my_file.read()
 subdomains = data.split('\n')
+
+limpiar_pantalla()
+print(Back.RED + Fore.WHITE + '\n Subdomain-Scanner ' + Back.BLACK + Fore.GREEN + '\n\n' + fecha() + '\n')
 
 # Definir el dominio principal
 domain = sys.argv[1]
