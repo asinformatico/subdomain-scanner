@@ -2,6 +2,8 @@
 import os, sys
 import dns.resolver
 import socket
+import platform
+import time
 from colorama import Fore, Back, init
 init()
 
