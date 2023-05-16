@@ -8,6 +8,7 @@ from colorama import Fore, Back, init
 init()
 
 # Limpia todo el contenido de la pantalla
+# ===============================================
 def limpiar_pantalla():
     nombre_sistema = platform.system()
     if nombre_sistema == "Windows":
@@ -16,21 +17,20 @@ def limpiar_pantalla():
         os.system('clear')
 
 # Retorna la fecha del sistema
+# ================================================
 def fecha():
     return time.strftime('Fecha: %d/%m/%Y')
 
-# Ver el destino de cada subdominio encontrado
-def destiny_ip(domain):
-    ip = os.system('nslookup ' + domain)
-    return ip
-
 # Definir la lista de subdominios
-my_file = open('diccionario1.txt', 'r')
-data = my_file.read()
-subdomains = data.split('\n')
+# ================================================
+def subdominios_lista():
+    my_file = open('diccionario1.txt', 'r')
+    data = my_file.read()
+    subdomains = data.split('\n')
+    return subdomains
 
 limpiar_pantalla()
-print(Back.RED + Fore.WHITE + '\n Subdomain-Scanner ' + Back.BLACK + Fore.GREEN + '\n\n' + fecha() + '\n')
+print(Back.RED + Fore.WHITE + '\n Subdomain-Scanner ' + Back.WHITE + Fore.BLUE + '\n\n' + fecha() + '\n')
 
 # Definir el dominio principal
 domain = sys.argv[1]
@@ -40,19 +40,20 @@ try:
     answers = dns.resolver.resolve(domain, 'PTR')
     ptr_values = [answer.to_text() for answer in answers]
     if ptr_values:
-        print(f'Dominio principal: {domain}')
+        print(Back.BLACK + Fore.YELLOW + f'Dominio principal: {domain}')
         print(f'Valor PTR: {", ".join(ptr_values)}')
         print('---')
 except dns.resolver.NXDOMAIN:
     pass
 except dns.resolver.NoAnswer:
-    print(f'Dominio principal: {domain}')
+    print(Back.BLACK + Fore.YELLOW + f'Dominio principal: {domain}')
     print('Valor PTR: No se encontró valor PTR')
     print('---')
 except Exception as e:
     print(f'Error al resolver el dominio principal: {str(e)}')
     print('---')
-
+    
+subdomains = subdominios_lista()
 # Recorrer la lista de subdominios
 for subdomain in subdomains:
     # Componer el nombre completo del subdominio
@@ -76,26 +77,26 @@ for subdomain in subdomains:
                 except socket.herror:
                     ptr_value = 'No se encontró valor PTR'
 
-                print(f'Subdominio: {full_domain}')
+                print(Back.BLACK + Fore.GREEN +f'Subdominio: {full_domain}')
                 print(f'Encontrado: Sí')
                 print(f'Valor PTR: {ptr_value}')
-                print(destiny_ip(full_domain))
+                print('Destino: ' + ip_address)
                 print('---')
+                listado = list(answers)
 
             elif answer.rdtype == dns.rdatatype.CNAME:
                 cname_value = answer.target.to_text().strip('.')
                 cname_values.append(cname_value)
 
         if cname_values:
-            print(f'Subdominio: {full_domain}')
+            print(Back.BLACK + Fore.GREEN +f'Subdominio: {full_domain}')
             print(f'Encontrado: Sí')
             print(f'Valores CNAME: {", ".join(cname_values)}')
-            print(destiny_ip(full_domain))
+            print('Destino: ' + ip_address)
             print('---')
-
+                
     except dns.resolver.NXDOMAIN:
         pass
 
     except Exception as e:
-        pass
-        #print(f'Error al resolver {full_domain}: {str(e)}')
+        print(f'Error al resolver {full_domain}: {str(e)}')
